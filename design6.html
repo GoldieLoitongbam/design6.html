@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | Music Player</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Baloo+2&display=swap');
+
+    :root {
+      --main-color: #2196f3;
+      --accent-color: #fdd835;
+      --bg-color: #e3f2fd;
+      --text-color: #0d47a1;
+      --error-color: #ef5350;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Baloo 2', cursive;
+      color: var(--text-color);
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+    .background-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-box {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(33,150,243,0.3);
+      width: 300px;
+      transition: all 0.4s ease-in-out;
+    }
+    .music-player-heading {
+      font-size: 3rem;
+      font-family: 'Baloo 2', cursive;
+      color: #ffffff;
+      text-align: center;
+      text-shadow: 2px 2px 8px rgba(33, 150, 243, 0.6), 0 0 25px rgba(33, 150, 243, 0.5);
+      margin-bottom: 2rem;
+      letter-spacing: 2px;
+      animation: headingAnimation 2s ease-in-out;
+      position: relative;
+    }
+    .music-player-heading::before,
+    .music-player-heading::after {
+      content: '';
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff85d3, #fcbf61);
+      box-shadow: 0 0 10px rgba(255, 105, 180, 0.6), 0 0 15px rgba(255, 223, 186, 0.5);
+      opacity: 0.4;
+      z-index: -1;
+      animation: flowerAnimation 4s ease-in-out infinite;
+    }
+    .music-player-heading::before {
+      top: -30px;
+      left: -50px;
+      animation-delay: 0s;
+    }
+
+    .music-player-heading::after {
+      top: -30px;
+      right: -50px;
+      animation-delay: 2s;
+    }
+
+    @keyframes headingAnimation {
+      0% { transform: translateY(-50px); opacity: 0; }
+      50% { transform: translateY(10px); opacity: 0.7; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes flowerAnimation {
+      0% { transform: scale(0.9) rotate(0deg); opacity: 0.4; }
+      50% { transform: scale(1.2) rotate(180deg); opacity: 0.7; }
+      100% { transform: scale(0.9) rotate(360deg); opacity: 0.4; }
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"], input[type="password"] {
+      padding: 10px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      background: #e1f5fe;
+      color: var(--text-color);
+    }
+
+    input:invalid {
+      border-color: var(--error-color);
+    }
+
+    input:valid {
+      border-color: var(--main-color);
+    }
+
+    .submit-btn {
+      margin-top: 20px;
+      padding: 10px;
+      background: var(--main-color);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: #1976d2;
+    }
+
+    #player {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #signin:target ~ #player {
+      display: flex;
+    }
+
+    #signin:target ~ .container {
+      display: none;
+    }
+
+    .playlist {
+      width: 90%;
+      max-width: 700px;
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .track {
+      background: rgba(255,255,255,0.9);
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .track:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 18px rgba(33,150,243,0.4);
+    }
+
+    .track img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-color);
+      transition: transform 0.5s ease;
+    }
+
+    .track:hover img {
+      transform: rotate(360deg);
+    }
+
+    .track-info {
+      flex: 1;
+    }
+
+    .track-info h3 {
+      margin: 0 0 0.5rem;
+      color: var(--main-color);
+      font-size: 1.2rem;
+    }
+
+    audio {
+      width: 100%;
+      border: none;
+      border-radius: 20px;
+      background: linear-gradient(to right, #e3f2fd, #bbdefb);
+      padding: 0.3rem;
+      accent-color: var(--main-color);
+      box-shadow: 0 2px 10px rgba(33,150,243,0.2);
+      transition: all 0.3s ease-in-out;
+    }
+
+    audio::-webkit-media-controls-panel {
+      background-color: #bbdefb;
+      border-radius: 20px;
+    }
+
+    audio::-webkit-media-controls-play-button {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <img src="pic 1.jpeg" alt="Background" class="background-image" />
+  <a id="signin"></a>
+
+  <div class="container">
+    <div class="form-box">
+      <h2>Sign In</h2>
+      <form action="#signin">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" pattern="[A-Za-z0-9]{4,}" required placeholder="Enter username" />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" pattern=".{6,}" required placeholder="Enter password" />
+
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="player">
+    <h2 class="music-player-heading">Welcome to the Music Player</h2>
+    <div class="playlist">
+      <div class="track">
+        <img src="I Can’t Help Falling In Love With You.jpeg" alt="Track 1 Thumbnail">
+        <div class="track-info">
+          <h3>ELVIS PRESLEY | CAN'T HELP FALLING IN LOVE | Mp3</h3>
+          <audio controls>
+            <source src="Elvis Presley - Can't Help Falling In Love (Official Audio).mp3" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div>
+      <div class="track">
+        <img src="Backstreet Boys - Backstreet's Back - CD.jpeg">
+        <div class="track-info">
+          <h3>BACKSTREET BOYS | AS LONG AS YOU LOVE ME | Mp3</h3>
+          <audio controls>
+            <source src="Backstreet Boys - As Long As You Love Me (Official HD Video).mp3" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div>
+      <div class="track">
+        <img src="george benson.jpeg" alt="Track 3 Thumbnail">
+        <div class="track-info">
+          <h3>GEORGE BENSON | NOTHING'S GONNA CHANGE MY LOVE FOR YOU | Mp3</h3>
+          <audio controls>
+            <source src="Nothing's Gonna Change My Love for You.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      </div>
+      <div class="track">
+        <img src="Kim Ah-joong - Picture (김아중).jpeg" alt="Track 3 Thumbnail">
+        <div class="track-info">
+          <h3>"KIM AH-JOONG | MARIA | Mp3"</h3>
+          <audio controls>
+            <source src="Maria (Maria).mp3" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div><div class="track">
+        <img src="funny how all dreams come true….jpeg" alt="Track 3 Thumbnail">
+        <div class="track-info">
+          <h3>S.E.S | DREAMS COME TRUE | Mp3</h3>
+          <audio controls>
+            <source src="S.E.S. 'Dreams Come True' MV.mp3" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div><div class="track">
+        <img src="newjeans ot5 group photo.jpeg" alt="Track 3 Thumbnail">
+        <div class="track-info">
+          <h3>NEW JEANS | SUPER SHY | Mp3</h3>
+          <audio controls>
+            <source src="NewJeans (뉴진스) 'Super Shy' Official MV.mp3" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div>
+      <div class="track">
+        <img src="Elemental SVG Elemental Ember SVG Elemental Wade SVG Elemental Silhouette Elemental Clipart Elemental Cut Files Elemental Png.jpeg" alt="Track 2 Thumbnail">
+        <div class="track-info">
+          <h3>LAUV | STEAL THE SHOW | Mp3</h3>
+          <audio controls>
+            <source src="Lauv - Steal The Show (From ElementalOfficial Audio).mp3" type="audio/mpeg" />
+            </audio>
+          </div>
+        </div>
+       <div class="track">
+        <img src="download.jpeg" alt="Track 3 Thumbnail">
+        <div class="track-info">
+          <h3> v | CHRISTMAS TREE | Mp3</h3>
+          <audio controls>
+            <source src="V_-_Christmas_Tree(256k).mp3" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div>
+      <div class="track">
+        <img src="Bad Blood (Taylor's Version).jpeg" alt="Track 2 Thumbnail">
+        <div class="track-info">
+          <h3>TAYLOR SWIFT | BLANK SPACE | Mp3</h3>
+          <audio controls>
+            <source src="Taylor Swift - Blank Space.mp3" type="audio/mpeg" />
+            </audio>
+        </div>
+      </div>
+      <div class="track">
+        <img src="What Makes You Beautiful duplicate single cover.jpeg" alt="Track 2 Thumbnail">
+        <div class="track-info">
+          <h3>ONE DIRECTION | WHAT MAKES YOU BEAUTIFUL | Mp3</h3>
+          <audio controls>
+            <source src="One Direction - What Makes You Beautiful (Official Video).mp3" type="audio/mpeg" />
+            </audio>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
